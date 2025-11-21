@@ -7,6 +7,13 @@
 
 using namespace std;
 
+void CampusCompass::addEdge(int u, int v, int time) {
+    // unidirected. open by default
+    Graph[u].push_back({v, time, true});
+    Graph[v].push_back({u, time, true});
+
+}
+
 vector<vector<string>> CampusCompass::readCSV(const string &filename) {
     vector<vector<string>> data;
     ifstream file(filename);
@@ -52,42 +59,35 @@ CampusCompass::CampusCompass() {
 
 bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes_filepath) {
     // load edges.csv
-    auto edgesTable = readCSV(edges_filepath);
-    if (edgesTable.empty()) {
+    auto edges = readCSV(edges_filepath);
+    if (edges.empty()) {
         return false;
     }
 
-    edges_.clear();
-    // skip header row at index 0
-    for (size_t i = 1; i < edgesTable.size(); ++i) {
-        const auto &row = edgesTable[i];
+    for (size_t i = 1; i < edges.size(); i++) {
+        auto &row = edges[i];
 
-        Edge e;
-        e.fromID = stoi(row[0]);
-        e.toID   = stoi(row[1]);
-        e.name1  = row[2];
-        e.name2  = row[3];
-        e.time   = stoi(row[4]);
+        int u = stoi(row[0]); // LocationID_1
+        int v = stoi(row[1]); // LocationID_2
+        int t = stoi(row[4]); // Time
 
-        edges_.push_back(e);
+        addEdge(u, v, t);
     }
 
-    // load classes.csv
-    auto classesTable = readCSV(classes_filepath);
-    if (classesTable.empty()) return false;
+    // Load classes.csv
+    auto classInfo = readCSV(classes_filepath);
+    if (classes.empty()) return false;
 
-    classes_.clear();
-    // skip first row
-    for (size_t i = 1; i < classesTable.size(); ++i) {
-        const auto &row = classesTable[i];
+    for (size_t i = 1; i < classInfo.size(); i++) {
+        auto &row = classInfo[i];
+        if (row.size() < 4) continue;
 
-        ClassMeeting c;
-        c.classCode    = row[0];
-        c.locationID   = stoi(row[1]);
-        c.startMinutes = timeToMinutes(row[2]);
-        c.endMinutes   = timeToMinutes(row[3]);
+        string code = row[0];
+        int locationID = stoi(row[1]);
+        int start = timeToMinutes(row[2]);
+        int end = timeToMinutes(row[3]);
 
-        classes_.push_back(c);
+        classes[code] = {code, locationID, start, end};
     }
 
     return true;
