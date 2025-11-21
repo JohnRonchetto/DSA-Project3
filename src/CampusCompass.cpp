@@ -67,27 +67,37 @@ bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes
     for (size_t i = 1; i < edges.size(); i++) {
         auto &row = edges[i];
 
-        int u = stoi(row[0]); // LocationID_1
-        int v = stoi(row[1]); // LocationID_2
+        int u = stoi(row[0]); // Location ID 1
+        int v = stoi(row[1]); // Location ID 2
+        string locName1 = row[2]; // Location name 1
+        string locName2 = row[3]; // Location name 2
         int t = stoi(row[4]); // Time
+
+        // making sure names exist before inserting into map
+        if (!locName1.empty())
+            // (emplace only inserts if key doesn't exist)
+            locationNames.emplace(u, locName1);
+        if (!locName2.empty())
+            locationNames.emplace(v, locName2);
 
         addEdge(u, v, t);
     }
 
     // Load classes.csv
     auto classInfo = readCSV(classes_filepath);
-    if (classes.empty()) return false;
+    if (classes.empty()) {
+        return false;
+    }
 
     for (size_t i = 1; i < classInfo.size(); i++) {
         auto &row = classInfo[i];
-        if (row.size() < 4) continue;
 
         string code = row[0];
         int locationID = stoi(row[1]);
         int start = timeToMinutes(row[2]);
         int end = timeToMinutes(row[3]);
 
-        classes[code] = {code, locationID, start, end};
+        classes[code] = {locationID, start, end};
     }
 
     return true;
