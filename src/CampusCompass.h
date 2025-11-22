@@ -71,5 +71,6 @@ public:
     void remove(int UFID);
     void dropClass(int UFID, string classCode);
     void replaceClass(int UFID, string classCode1, string classCode2);
+    void removeClass(string classCode);
 
 };

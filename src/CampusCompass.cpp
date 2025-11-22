@@ -147,6 +147,7 @@ bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes
     return true;
 }
 
+
 void CampusCompass::insert(string name, int UFID, int residenceID, vector<string> classCodes) {
 
     // check if student id is unique
@@ -249,6 +250,47 @@ void CampusCompass::replaceClass(int UFID, string classCode1, string classCode2)
     *codeIt1 = classCode2;
 
     cout << "successful" << endl;
+
+}
+
+void CampusCompass::removeClass(string classCode) {
+
+    int dropCounter = 0;
+
+    // verify that class code exists
+    auto itC = classes.find(classCode);
+    if (itC == classes.end()) {
+        cout << 0 << endl;
+        return;
+    }
+
+    // iterate over all the students
+    for (auto it = students.begin(); it != students.end(); ) {
+
+        Student &s = it->second;
+
+        // iterator for searching if students has class
+        auto itSC = find(s.classCodes.begin(), s.classCodes.end(), classCode);
+        // student has the class to be dropped
+        if (itSC != s.classCodes.end()) {
+            s.classCodes.erase(itSC);
+            dropCounter++;
+
+            // check if student has any classes
+            if (s.classCodes.empty()) {
+                // when erase is called -> it points to next !!!
+                it = students.erase(it);
+                // need to skip because we just deleted the iterator
+                // and already points to the next class code
+                continue;
+            }
+        }
+
+        ++it;
+    }
+
+    cout << dropCounter << endl;
+
 
 }
 
