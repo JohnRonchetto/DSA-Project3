@@ -22,8 +22,8 @@ std::string parseCommand(const std::string &command,
     const regex cRemove(R"(^\s*remove\s+(\d{8})\s*$)");
     const std::regex cDrop(R"(^\s*dropClass\s+(\d{8})\s+([A-Z]{3}\d{4})\s*$)");
     const regex cReplace(R"(^\s*replaceClass\s+(\d{8})\s+([A-Z]{3}\d{4})\s+([A-Z]{3}\d{4})\s*$)");
+    const regex cRemoveClass(R"(^\s*removeClass\s+([A-Z]{3}\d{4})\s*$)");
 
-    const regex cRemoveClass(R"(^\s*removeClass\s+([A-Z0-9]+)\s*$)");
     const regex cToggleEdges(R"(^\s*toggleEdgesClosure\s+(\d+)\s+(.+)\s*$)");
     const regex cCheckEdge(R"(^\s*checkEdgeStatus\s+(\d+)\s+(\d+)\s*$)");
     const regex cConnected(R"(^\s*isConnected\s+(\d+)\s+(\d+)\s*$)");
@@ -96,8 +96,13 @@ std::string parseCommand(const std::string &command,
 
     }
     if (std::regex_match(command, m, cRemoveClass)) {
+        try {
+            classCodes.push_back((m[1].str()));
+            return "removeClass";
+        } catch (...) {
+            return "unsuccessful";
+        }
 
-        return "removeClass";
     }
     if (std::regex_match(command, m, cToggleEdges)) {
 
@@ -155,7 +160,7 @@ bool verifyCommand(const std::string &command, CampusCompass &CC) {
         return true;
     }
     if (comm == "removeClass") {
-
+        CC.removeClass(classCodes[0]);
         return true;
     }
     if (comm == "toggleEdgesClosure") {
