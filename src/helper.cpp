@@ -23,8 +23,8 @@ std::string parseCommand(const std::string &command,
     const std::regex cDrop(R"(^\s*dropClass\s+(\d{8})\s+([A-Z]{3}\d{4})\s*$)");
     const regex cReplace(R"(^\s*replaceClass\s+(\d{8})\s+([A-Z]{3}\d{4})\s+([A-Z]{3}\d{4})\s*$)");
     const regex cRemoveClass(R"(^\s*removeClass\s+([A-Z]{3}\d{4})\s*$)");
-
     const regex cToggleEdges(R"(^\s*toggleEdgesClosure\s+(\d+)\s+(.+)\s*$)");
+
     const regex cCheckEdge(R"(^\s*checkEdgeStatus\s+(\d+)\s+(\d+)\s*$)");
     const regex cConnected(R"(^\s*isConnected\s+(\d+)\s+(\d+)\s*$)");
     const regex cShortest(R"(^\s*printShortestEdges\s+(\d+)\s*$)");
@@ -53,8 +53,8 @@ std::string parseCommand(const std::string &command,
                 classCodes.push_back(code);
             }
 
-            // Must have exactly N class codes
-            if (static_cast<int>(classCodes.size()) != N) {
+            // check that there are N class codes
+            if (classCodes.size() != N) {
                 return "unsuccessful";
             }
 
@@ -105,8 +105,29 @@ std::string parseCommand(const std::string &command,
 
     }
     if (std::regex_match(command, m, cToggleEdges)) {
+        try {
+            N = stoi(m[1].str());
 
-        return "toggleEdgesClosure";
+            // parse the edges
+            string strIDs = m[2].str();
+            stringstream ss(strIDs);
+            int id;
+
+            while (ss >> id) {
+                locationIDs.push_back(id);
+            }
+
+            // make sure that N corresponds to the number of ids
+            if (locationIDs.size() != 2*N) {
+                return "unsuccessful";
+            }
+
+            return "toggleEdgesClosure";
+
+
+        } catch (...) {
+            return "unsuccessful";
+        }
     }
     if (std::regex_match(command, m, cCheckEdge)) {
 
@@ -164,7 +185,7 @@ bool verifyCommand(const std::string &command, CampusCompass &CC) {
         return true;
     }
     if (comm == "toggleEdgesClosure") {
-
+        CC.toggleEdgesClosure(N, locationIDs);
         return true;
     }
     if (comm == "checkEdgeStatus") {
