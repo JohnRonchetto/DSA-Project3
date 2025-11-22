@@ -57,6 +57,9 @@ private:
 
     //translate HH:WW to minutes (need for verifySchedule function EC)
     int timeToMinutes(const string &hhmm);
+    // helper for printShortestEdges functions -> Dijkstra
+    // also traces all parents for printStudentZone function
+    void shortestPaths(int sourceID, std::unordered_map<int, int> &dist, std::unordered_map<int, int> &parent);
 
 public:
     CampusCompass();
@@ -73,4 +76,6 @@ public:
     void removeClass(string classCode);
     void toggleEdgesClosure(int N, vector<int> &locationIDs);
     void checkEdgeStatus(int locationIDx, int locationIDy);
+    void isConnected(int u, int v);
+    void printShortestEdges(int UFID);
 };

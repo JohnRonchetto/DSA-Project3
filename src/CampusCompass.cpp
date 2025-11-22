@@ -5,6 +5,9 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <queue>
+#include <unordered_set>
+#include <limits>
 
 using namespace std;
 
@@ -20,6 +23,86 @@ int CampusCompass::timeToMinutes(const string &hhmm) {
     int hour = stoi(hhmm.substr(0, pos));
     int minute = stoi(hhmm.substr(pos + 1));
     return hour * 60 + minute;
+}
+
+void CampusCompass::shortestPaths(int sourceID, std::unordered_map<int, int> &dist, std::unordered_map<int, int> &parent) {
+
+    dist.clear();
+    parent.clear();
+
+    // location id -> shortest distance from source
+    // std::unordered_map<int, int> &dist
+
+    // child Node -> parent Node
+    // std::unordered_map<int, int> &parent
+
+    const int INF = numeric_limits<int>::max();
+
+    // this declares the type for the pq
+    // pair<dist, id>
+    using node = pair<int, int>;
+    // min heap
+    // pq(dist, id)
+    priority_queue<node, vector<node>, greater<node>> pq;
+
+    dist[sourceID] = 0;
+    parent[sourceID] = -1;
+    pq.push({0, sourceID});
+
+
+    while (!pq.empty()) {
+        // node with smallest distance in pq
+        auto curr = pq.top();
+        int d = curr.first;
+        int u = curr.second;
+        pq.pop();
+
+        // no decrease key function so
+        // if duplicate with old state found -> skip
+        if (d > dist[u]) {
+            continue;
+        }
+
+        auto it = Graph.find(u);
+        // should not happen, but just in case
+        if (it == Graph.end()) {
+            continue;
+        }
+
+        const vector<GraphEdge> &neighbors = it->second;
+
+        // Relax all open outgoing edges
+        for (const GraphEdge &edge : neighbors) {
+            // check if edge is open
+            if (!edge.open) {
+                continue;
+            }
+
+            int v = edge.to;
+            int w = edge.time;
+
+            int oldDist;
+
+            // checks if distance known first
+            if (dist.count(v) != 0) {
+                // already know a distance
+                oldDist = dist[v];
+            } else {
+                // don't know a distance yet
+                oldDist = INF;
+            }
+
+            int newDist = d + w;
+
+            // relaxation step
+            // if new distance (time) is less than the current
+            if (newDist < oldDist) {
+                dist[v] = newDist; // update distance
+                parent[v] = u; // update parent
+                pq.push({newDist, v});
+            }
+        }
+    }
 }
 
 vector<vector<string>> CampusCompass::readCSV(const string &filename) {
@@ -148,6 +231,8 @@ bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes
 }
 
 
+
+// check if residence ID exists???????
 void CampusCompass::insert(string name, int UFID, int residenceID, vector<string> classCodes) {
 
     // check if student id is unique
@@ -158,7 +243,7 @@ void CampusCompass::insert(string name, int UFID, int residenceID, vector<string
 
     Student s;
     s.name = name;
-    s.residenceID = residenceID;;
+    s.residenceID = residenceID;
     s.classCodes = classCodes;
 
     students[UFID] = s;
@@ -316,5 +401,58 @@ void CampusCompass::checkEdgeStatus(int locationIDx, int locationIDy) {
     } else {
         cout << "closed" << endl;
     }
+}
+
+void CampusCompass::isConnected(int u, int v) {
+    // check that edges exists
+    if (Graph.find(u) == Graph.end() || Graph.find(v) == Graph.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    // check if they are the same
+    if (u == v) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    // BFS
+
+    queue<int> q;
+    unordered_set<int> visited;
+
+    q.push(u);
+    visited.insert(u);
+
+    while (!q.empty()) {
+        int t = q.front();
+        q.pop();
+
+        vector<GraphEdge> neighbors = Graph[t];
+        for (auto &s : neighbors) {
+
+            // path not open then do not insert in queue and set
+            if (!s.open) {
+                continue;
+            }
+
+            // already visited
+            if (visited.count(s.to) != 0) {
+                continue;
+            }
+
+            // path found
+            if (s.to == v) {
+                cout << "successful" << endl;
+                return;
+            }
+
+            visited.insert(s.to);
+            q.push(s.to);
+        }
+    }
+
+    cout << "unsuccessful" << endl;
+
 }
 
