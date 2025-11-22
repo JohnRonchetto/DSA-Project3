@@ -213,3 +213,42 @@ void CampusCompass::dropClass(int UFID, string classCode) {
 
 }
 
+void CampusCompass::replaceClass(int UFID, string classCode1, string classCode2) {
+
+    // check if student exists
+    auto it = students.find(UFID);
+    if (it == students.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    // check if class code 2 exists in class codes table
+    if (classes.find(classCode2) == classes.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    Student &s = it->second;
+
+    // check if student has class code 1
+    auto codeIt1 = find(s.classCodes.begin(), s.classCodes.end(), classCode1);
+    if (codeIt1 == s.classCodes.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    // check that student doesn't already have class code 2
+    auto codeIt2 = find(s.classCodes.begin(), s.classCodes.end(), classCode2);
+    if (codeIt2 != s.classCodes.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    // replace class code 1 with code 2 (In-place)
+    // dereferencing pointer to code 1 and overwriting it
+    *codeIt1 = classCode2;
+
+    cout << "successful" << endl;
+
+}
+

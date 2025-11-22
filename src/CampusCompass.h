@@ -70,5 +70,6 @@ public:
     void insert(string name, int UFID, int residenceID, vector<string> classCodes);
     void remove(int UFID);
     void dropClass(int UFID, string classCode);
+    void replaceClass(int UFID, string classCode1, string classCode2);
 
 };
