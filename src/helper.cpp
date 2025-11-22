@@ -21,8 +21,8 @@ std::string parseCommand(const std::string &command,
     R"CMD(^\s*insert\s+"([A-Za-z][A-Za-z ]*)"\s+(\d{8})\s+(\d+)\s+([1-6])\s+(.+)\s*$)CMD");
     const regex cRemove(R"(^\s*remove\s+(\d{8})\s*$)");
     const std::regex cDrop(R"(^\s*dropClass\s+(\d{8})\s+([A-Z]{3}\d{4})\s*$)");
+    const regex cReplace(R"(^\s*replaceClass\s+(\d{8})\s+([A-Z]{3}\d{4})\s+([A-Z]{3}\d{4})\s*$)");
 
-    const regex cReplace(R"(^\s*replaceClass\s+(\d{8})\s+([A-Z0-9]+)\s+([A-Z0-9]+)\s*$)");
     const regex cRemoveClass(R"(^\s*removeClass\s+([A-Z0-9]+)\s*$)");
     const regex cToggleEdges(R"(^\s*toggleEdgesClosure\s+(\d+)\s+(.+)\s*$)");
     const regex cCheckEdge(R"(^\s*checkEdgeStatus\s+(\d+)\s+(\d+)\s*$)");
@@ -44,7 +44,7 @@ std::string parseCommand(const std::string &command,
             std::stringstream ss(codesStr);
             string code;
 
-            std::regex classCodeFormat(R"([A-Z]{3}\d{4})");
+            const std::regex classCodeFormat(R"([A-Z]{3}\d{4})");
 
             while (ss >> code) {
                 if (!std::regex_match(code, classCodeFormat)) {
@@ -85,8 +85,15 @@ std::string parseCommand(const std::string &command,
 
     }
     if (std::regex_match(command, m, cReplace)) {
+        try {
+            UFID = std::stoi(m[1].str());
+            classCodes.push_back(m[2].str());
+            classCodes.push_back(m[3].str());
+            return "replaceClass";
+        } catch (...) {
+            return "unsuccessful";
+        }
 
-        return "replaceClass";
     }
     if (std::regex_match(command, m, cRemoveClass)) {
 
@@ -144,7 +151,7 @@ bool verifyCommand(const std::string &command, CampusCompass &CC) {
         return true;
     }
     if (comm == "replaceClass") {
-
+        CC.replaceClass(UFID, classCodes[0], classCodes[1]);
         return true;
     }
     if (comm == "removeClass") {
