@@ -5,19 +5,21 @@
 
 using namespace std;
 
-// Edge in the adjacency list
+// Edge in the adjacency list graph
 struct GraphEdge {
     int to;      // neighboring location ID
     int time;    // travel time / weight
     bool open;   // true = open, false = closed
 };
 
+// student info
 struct Student {
     string name;
     int residenceID;
     vector<string> classCodes; // list of enrolled class codes
 };
 
+// classes info
 struct Classes {
     int locationID;
     int startMinutes;
@@ -26,7 +28,8 @@ struct Classes {
 
 class CampusCompass {
 private:
-    // Adjacency List: location ID -> outgoing graph edges
+    // Adjacency List
+    // location ID -> graph edges
     unordered_map<int, vector<GraphEdge>> Graph;
 
     // student ID -> student info
@@ -37,7 +40,7 @@ private:
     unordered_map<int, string> locationNames;
 
     // Only needed for the extra credit
-    // classCode -> class Info
+    // class Code -> class Info
     unordered_map<string, Classes> classes;
     //translate HH:WW to minutes
     int timeToMinutes(const string &hhmm);
@@ -49,21 +52,22 @@ private:
 
     // csv reader
     vector<vector<string>> readCSV(const string &filename);
-    // Add edge to graph
-    void addEdge(int u, int v, int time);
 
-    bool studentExists(int id) const;
+    // Add undirected edge to graph
+    void addEdge(int u, int v, int time);
+    // get specific edge
     GraphEdge* getEdge(int u, int v);
-    const GraphEdge* getEdge(int u, int v) const;
-    bool toggleEdge(int u, int v);
+    // closes/opens edge. returns false if edge doesn't exist
+    bool toggleEdge(int u, int v, bool state);
 
 public:
-    // Think about what helper functions you will need in the algorithm
     CampusCompass(); // constructor
+    CampusCompass(const string &edges_filename, const string &classes_filename);
+
     // populates graph and classes Table
     bool ParseCSV(const string &edges_filepath, const string &classes_filepath);
-    bool ParseCommand(const string &command);
 
+    // Project functions
 
 
 };

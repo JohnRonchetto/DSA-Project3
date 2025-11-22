@@ -7,11 +7,18 @@
 
 using namespace std;
 
-void CampusCompass::addEdge(int u, int v, int time) {
-    // unidirected. open by default
-    Graph[u].push_back({v, time, true});
-    Graph[v].push_back({u, time, true});
+int CampusCompass::timeToMinutes(const string &hhmm) {
+    // size_t -> unsigned int
+    size_t pos = hhmm.find(':');
 
+    // string::npos -> size_t(-1)
+    if (pos == string::npos) {
+        return 0;
+    }
+
+    int hour = stoi(hhmm.substr(0, pos));
+    int minute = stoi(hhmm.substr(pos + 1));
+    return hour * 60 + minute;
 }
 
 vector<vector<string>> CampusCompass::readCSV(const string &filename) {
@@ -39,27 +46,62 @@ vector<vector<string>> CampusCompass::readCSV(const string &filename) {
     return data;
 }
 
-int CampusCompass::timeToMinutes(const string &hhmm) {
-    // size_t -> unsigned int
-    size_t pos = hhmm.find(':');
+void CampusCompass::addEdge(int u, int v, int time) {
+    // unidirected. open by default
+    Graph[u].push_back({v, time, true});
+    Graph[v].push_back({u, time, true});
 
-    // string::npos -> size_t(-1)
-    if (pos == string::npos) {
-        return 0;
-    }
-
-    int hour = stoi(hhmm.substr(0, pos));
-    int minute = stoi(hhmm.substr(pos + 1));
-    return hour * 60 + minute;
 }
 
+GraphEdge * CampusCompass::getEdge(int u, int v) {
+    auto it = Graph.find(u);
+
+    // edge doesn't exist
+    if (it == Graph.end()) {
+        return nullptr;
+    }
+
+    for (auto &edge : it->second) {
+        if (edge.to == v) {
+            return &edge;
+        }
+    }
+
+    // v not a neighbor of u;
+    return nullptr;
+
+
+}
+
+bool CampusCompass::toggleEdge(int u, int v, bool state) {
+    GraphEdge* e1 = getEdge(u, v);
+    GraphEdge* e2 = getEdge(v, u);
+
+    // edge does not exist
+    if (e1 == nullptr || e2 == nullptr) {
+        return false;
+    }
+
+    e1->open = state;
+    e2->open = state;
+
+    return true;
+}
+
+
 CampusCompass::CampusCompass() {
-    // initialize your object
+}
+
+CampusCompass::CampusCompass(const string &edges_filename, const string &classes_filename) {
+    if (!ParseCSV(edges_filename, classes_filename)) {
+        cerr << "Error: could not parse CSV files" << endl;
+    }
 }
 
 bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes_filepath) {
     // load edges.csv
     auto edges = readCSV(edges_filepath);
+
     if (edges.empty()) {
         return false;
     }
@@ -85,7 +127,8 @@ bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes
 
     // Load classes.csv
     auto classInfo = readCSV(classes_filepath);
-    if (classes.empty()) {
+
+    if (classInfo.empty()) {
         return false;
     }
 
@@ -103,10 +146,3 @@ bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes
     return true;
 }
 
-bool CampusCompass::ParseCommand(const string &command) {
-    // do whatever regex you need to parse validity
-    // hint: return a boolean for validation when testing. For example:
-    bool is_valid = true; // replace with your actual validity checking
-
-    return is_valid;
-}
