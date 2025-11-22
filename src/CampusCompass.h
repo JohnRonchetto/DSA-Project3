@@ -72,5 +72,5 @@ public:
     void replaceClass(int UFID, string classCode1, string classCode2);
     void removeClass(string classCode);
     void toggleEdgesClosure(int N, vector<int> &locationIDs);
-
+    void checkEdgeStatus(int locationIDx, int locationIDy);
 };

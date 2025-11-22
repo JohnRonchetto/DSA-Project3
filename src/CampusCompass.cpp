@@ -306,3 +306,15 @@ void CampusCompass::toggleEdgesClosure(int N, vector<int> &locationIDs) {
 
 }
 
+void CampusCompass::checkEdgeStatus(int locationIDx, int locationIDy) {
+    GraphEdge* e = getEdge(locationIDx, locationIDy);
+
+    if (e == nullptr) {
+        cout << "DNE" << endl;
+    } else if (e->open) {
+        cout << "open" << endl;
+    } else {
+        cout << "closed" << endl;
+    }
+}
+
