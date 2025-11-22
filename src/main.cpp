@@ -6,13 +6,12 @@
 using namespace std;
 
 int main() {
-    // initialize your main project object
+    // initializing main project object
     CampusCompass CC;
 
     // ingest CSV data
     CC.ParseCSV("../data/edges.csv", "../data/classes.csv");
 
-    // the below is example code for parsing commandline input
     int no_of_lines;
     string command;
     cin >> no_of_lines;
