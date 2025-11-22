@@ -17,9 +17,11 @@ std::string parseCommand(const std::string &command,
     locationIDs.clear();
 
 
-    const std::regex cInsert(R"CMD(^\s*insert\s+"([A-Za-z][A-Za-z ]*)"\s+(\d{8})\s+(\d+)\s+(\d+)\s+(.+)\s*$)CMD");
+    const std::regex cInsert(                                               // (.+) catches rest of the line
+    R"CMD(^\s*insert\s+"([A-Za-z][A-Za-z ]*)"\s+(\d{8})\s+(\d+)\s+([1-6])\s+(.+)\s*$)CMD");
     const regex cRemove(R"(^\s*remove\s+(\d{8})\s*$)");
-    const regex cDrop(R"(^\s*dropClass\s+(\d{8})\s+([A-Z0-9]+)\s*$)");
+    const std::regex cDrop(R"(^\s*dropClass\s+(\d{8})\s+([A-Z]{3}\d{4})\s*$)");
+
     const regex cReplace(R"(^\s*replaceClass\s+(\d{8})\s+([A-Z0-9]+)\s+([A-Z0-9]+)\s*$)");
     const regex cRemoveClass(R"(^\s*removeClass\s+([A-Z0-9]+)\s*$)");
     const regex cToggleEdges(R"(^\s*toggleEdgesClosure\s+(\d+)\s+(.+)\s*$)");
@@ -42,7 +44,12 @@ std::string parseCommand(const std::string &command,
             std::stringstream ss(codesStr);
             string code;
 
+            std::regex classCodeFormat(R"([A-Z]{3}\d{4})");
+
             while (ss >> code) {
+                if (!std::regex_match(code, classCodeFormat)) {
+                    return "unsuccessful";
+                }
                 classCodes.push_back(code);
             }
 
@@ -59,12 +66,23 @@ std::string parseCommand(const std::string &command,
 
     }
     if (std::regex_match(command, m, cRemove)) {
-
-        return "remove";
+        try {
+            UFID = std::stoi(m[1].str());
+            return "remove";
+        } catch (...) {
+            return "unsuccessful";
+        }
     }
     if (std::regex_match(command, m, cDrop)) {
+        try {
+            UFID = std::stoi(m[1].str());
+            // just have the single class code
+            classCodes.push_back(m[2].str());
+            return "dropClass";
+        } catch (...) {
+            return "unsuccessful";
+        }
 
-        return "dropClass";
     }
     if (std::regex_match(command, m, cReplace)) {
 
@@ -114,15 +132,15 @@ bool verifyCommand(const std::string &command, CampusCompass &CC) {
     const std::string comm = parseCommand(command, name, UFID, residenceID, N, classCodes, locationIDs);
 
     if (comm == "insert") {
-        // CC.insert(name, UFID, residenceID, N, classCodes)
+        CC.insert(name, UFID, residenceID, classCodes);
         return true;
     }
     if (comm == "remove") {
-
+        CC.remove(UFID);
         return true;
     }
     if (comm == "dropClass") {
-
+        CC.dropClass(UFID, classCodes[0]);
         return true;
     }
     if (comm == "replaceClass") {
