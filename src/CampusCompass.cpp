@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -144,5 +145,71 @@ bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes
     }
 
     return true;
+}
+
+void CampusCompass::insert(string name, int UFID, int residenceID, vector<string> classCodes) {
+
+    // check if student id is unique
+    if (students.find(UFID) != students.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    Student s;
+    s.name = name;
+    s.residenceID = residenceID;;
+    s.classCodes = classCodes;
+
+    students[UFID] = s;
+    cout << "successful" << endl;
+}
+
+void CampusCompass::remove(int UFID) {
+
+    auto it = students.find(UFID);
+    // check if student exist
+    if(it == students.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    students.erase(it);
+    cout << "successful" << endl;
+
+}
+
+void CampusCompass::dropClass(int UFID, string classCode) {
+
+    // check if student exists
+    auto it = students.find(UFID);
+    if (it == students.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    // check if class code exists in the class codes table
+    if (classes.find(classCode) == classes.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    Student &s = it->second;
+
+    // check if student is enrolled in that class
+    auto codeIt = find(s.classCodes.begin(), s.classCodes.end(), classCode);
+    if (codeIt == s.classCodes.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    s.classCodes.erase(codeIt);
+
+    // remove student if 0 classes (considered success)
+    if (s.classCodes.empty()) {
+        students.erase(it);
+    }
+
+    cout << "successful" << endl;
+
 }
 

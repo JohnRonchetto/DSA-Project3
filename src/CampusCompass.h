@@ -35,16 +35,12 @@ private:
     // student ID -> student info
     unordered_map<int, Student> students;
 
+    // class Code -> class Info
+    unordered_map<string, Classes> classes;
+
     // Not really needed for the assignment?
     // location ID -> location name
     unordered_map<int, string> locationNames;
-
-    // Only needed for the extra credit
-    // class Code -> class Info
-    unordered_map<string, Classes> classes;
-    //translate HH:WW to minutes
-    int timeToMinutes(const string &hhmm);
-
 
 
 
@@ -60,14 +56,19 @@ private:
     // closes/opens edge. returns false if edge doesn't exist
     bool toggleEdge(int u, int v, bool state);
 
+    //translate HH:WW to minutes (need for verifySchedule function EC)
+    int timeToMinutes(const string &hhmm);
+
 public:
-    CampusCompass(); // constructor
+    CampusCompass();
     CampusCompass(const string &edges_filename, const string &classes_filename);
 
     // populates graph and classes Table
     bool ParseCSV(const string &edges_filepath, const string &classes_filepath);
 
     // Project functions
-
+    void insert(string name, int UFID, int residenceID, vector<string> classCodes);
+    void remove(int UFID);
+    void dropClass(int UFID, string classCode);
 
 };
