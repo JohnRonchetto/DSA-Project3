@@ -48,13 +48,12 @@ private:
 
     // csv reader
     vector<vector<string>> readCSV(const string &filename);
-
     // Add undirected edge to graph
     void addEdge(int u, int v, int time);
     // get specific edge
     GraphEdge* getEdge(int u, int v);
     // closes/opens edge. returns false if edge doesn't exist
-    bool toggleEdge(int u, int v, bool state);
+    bool toggleEdge(int u, int v);
 
     //translate HH:WW to minutes (need for verifySchedule function EC)
     int timeToMinutes(const string &hhmm);
@@ -72,5 +71,6 @@ public:
     void dropClass(int UFID, string classCode);
     void replaceClass(int UFID, string classCode1, string classCode2);
     void removeClass(string classCode);
+    void toggleEdgesClosure(int N, vector<int> &locationIDs);
 
 };

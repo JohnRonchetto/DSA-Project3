@@ -74,7 +74,7 @@ GraphEdge * CampusCompass::getEdge(int u, int v) {
 
 }
 
-bool CampusCompass::toggleEdge(int u, int v, bool state) {
+bool CampusCompass::toggleEdge(int u, int v) {
     GraphEdge* e1 = getEdge(u, v);
     GraphEdge* e2 = getEdge(v, u);
 
@@ -83,8 +83,8 @@ bool CampusCompass::toggleEdge(int u, int v, bool state) {
         return false;
     }
 
-    e1->open = state;
-    e2->open = state;
+    e1->open = !e1->open;
+    e2->open = !e2->open;
 
     return true;
 }
@@ -291,6 +291,18 @@ void CampusCompass::removeClass(string classCode) {
 
     cout << dropCounter << endl;
 
+
+}
+
+void CampusCompass::toggleEdgesClosure(int N, vector<int> &locationIDs) {
+    // (edges always valid)
+
+    // N already checked in parse command
+    for (int i = 0; i < 2 * N; i += 2) {
+        toggleEdge(locationIDs[i], locationIDs[i + 1]);
+    }
+
+    cout << "successful" << endl;
 
 }
 
