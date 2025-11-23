@@ -25,9 +25,9 @@ std::string parseCommand(const std::string &command,
     const regex cRemoveClass(R"(^\s*removeClass\s+([A-Z]{3}\d{4})\s*$)");
     const regex cToggleEdges(R"(^\s*toggleEdgesClosure\s+(\d+)\s+(.+)\s*$)");
     const regex cCheckEdge(R"(^\s*checkEdgeStatus\s+(\d+)\s+(\d+)\s*$)");
-
     const regex cConnected(R"(^\s*isConnected\s+(\d+)\s+(\d+)\s*$)");
     const regex cShortest(R"(^\s*printShortestEdges\s+(\d+)\s*$)");
+
     const regex cZone(R"(^\s*printStudentZone\s+(\d+)\s*$)");
     const regex cVerify(R"(^\s*verifySchedule\s+(\d+)\s*$)");
 
@@ -145,12 +145,28 @@ std::string parseCommand(const std::string &command,
 
     }
     if (std::regex_match(command, m, cConnected)) {
+        try {
+            int id1 = std::stoi(m[1].str());
+            int id2 = std::stoi(m[2].str());
 
-        return "isConnected";
+            locationIDs.push_back(id1);
+            locationIDs.push_back(id2);
+
+            return "isConnected";
+
+        } catch (...) {
+            return "unsuccessful";
+        }
     }
     if (std::regex_match(command, m, cShortest)) {
+        try {
+            UFID = std::stoi(m[1].str());
 
-        return "printShortestEdges";
+            return "printShortestEdges";
+
+        } catch (...) {
+            return "unsuccessful";
+        }
     }
     if (std::regex_match(command, m, cZone)) {
 
@@ -204,15 +220,15 @@ bool verifyCommand(const std::string &command, CampusCompass &CC) {
         return true;
     }
     if (comm == "isConnected") {
-
+        CC.isConnected(locationIDs[0], locationIDs[1]);
         return true;
     }
     if (comm == "printShortEdges") {
-
+        CC.printShortestEdges(UFID);
         return true;
     }
     if (comm == "printStudentZone") {
-
+        
         return true;
     }
     if (comm == "verifySchedule") {
