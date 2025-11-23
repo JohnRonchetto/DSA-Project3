@@ -78,4 +78,5 @@ public:
     void checkEdgeStatus(int locationIDx, int locationIDy);
     void isConnected(int u, int v);
     void printShortestEdges(int UFID);
+    void printStudentZone(int UFID);
 };

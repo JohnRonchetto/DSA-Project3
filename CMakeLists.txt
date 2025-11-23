@@ -25,6 +25,8 @@ add_executable(Main
         src/CampusCompass.h
         src/helper.h
         src/helper.cpp
+        src/kruskalDS.h
+        src/kruskalDS.cpp
         # add your own header files below - should be automatically added in CLion
         # example (can also separate with newlines):
         # src/AVL.h src/AVL.cpp
