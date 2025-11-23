@@ -456,3 +456,48 @@ void CampusCompass::isConnected(int u, int v) {
 
 }
 
+void CampusCompass::printShortestEdges(int UFID) {
+
+    // double check that ID exists.
+    // (assignment says id is valid)
+    auto it = students.find(UFID);
+    if (it == students.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    // dummy for dijkstra function
+    unordered_map<int, int> dist;
+    unordered_map<int, int> parent;
+
+    const Student &s = it->second;
+
+    // copy and sort class codes in lexicographical order
+    vector<string> codes = s.classCodes;
+    sort(codes.begin(), codes.end());
+
+    // run dijkstra's algorithm
+    shortestPaths(s.residenceID, dist, parent);
+
+    cout << "Name: " << s.name << endl;
+
+    // print shortest time for each class
+    for (string &code : codes) {
+        int time = -1;
+        auto itC = classes.find(code);
+
+        // ensuring code exists (it should)
+        if (itC != classes.end()) {
+            int locID = itC->second.locationID;
+
+            auto itD = dist.find(locID);
+            // if not, no path -> time = -1
+            if (itD != dist.end()) {
+                time = itD->second;
+            }
+        }
+
+        cout << code << " | Total Time: " << time << endl;
+    }
+}
+
