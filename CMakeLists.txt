@@ -23,8 +23,8 @@ add_executable(Main
         src/main.cpp # your main file
         src/CampusCompass.cpp
         src/CampusCompass.h
-        src/helper.h
-        src/helper.cpp
+        src/parseCommand.h
+        src/parseCommand.cpp
         src/kruskalDS.h
         src/kruskalDS.cpp
         # add your own header files below - should be automatically added in CLion
@@ -37,8 +37,8 @@ add_executable(Tests
         test/test.cpp # your test file
         src/CampusCompass.cpp
         src/CampusCompass.h
-        src/helper.h
-        src/helper.cpp
+        src/parseCommand.h
+        src/parseCommand.cpp
         # add your own header files below - should be automatically added in CLion
         # example (can also separate with newlines):
         # src/AVL.h src/AVL.cpp

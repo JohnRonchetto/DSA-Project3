@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "CampusCompass.h"
-#include "helper.h"
+#include "parseCommand.h"
 
 using namespace std;
 
