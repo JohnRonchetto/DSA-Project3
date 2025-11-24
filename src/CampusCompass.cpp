@@ -174,6 +174,21 @@ int CampusCompass::computeMSTCost(const std::vector<ZoneEdge> &edges, const std:
     return mstCost;
 }
 
+int CampusCompass::shortestTravelTime(int from, int to) {
+    unordered_map<int, int> dist;
+    unordered_map<int, int> parent;
+
+    shortestPaths(from, dist, parent);
+
+    auto it = dist.find(to);
+    // check if path reachable
+    if (it == dist.end()) {
+        return numeric_limits<int>::max();
+    }
+
+    return it->second;
+}
+
 vector<vector<string>> CampusCompass::readCSV(const string &filename) {
     vector<vector<string>> data;
     ifstream file(filename);
@@ -268,11 +283,15 @@ bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes
             int t = stoi(row[4]); // Time
 
             // making sure names exist before inserting into map
-            if (!locName1.empty())
+            if (!locName1.empty()) {
                 // (emplace only inserts if key doesn't exist)
-                    locationNames.emplace(u, locName1);
-            if (!locName2.empty())
+                locationNames.emplace(u, locName1);
+            }
+
+            if (!locName2.empty()) {
                 locationNames.emplace(v, locName2);
+            }
+
 
             addEdge(u, v, t);
         }
@@ -306,7 +325,6 @@ bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes
 
 
 
-// check if residence ID exists???????
 void CampusCompass::insert(string name, int UFID, int residenceID, vector<string> classCodes) {
 
     // check if student id is unique
@@ -319,6 +337,14 @@ void CampusCompass::insert(string name, int UFID, int residenceID, vector<string
     if (Graph.find(residenceID) == Graph.end()) {
         cout << "unsuccessful" << endl;
         return;
+    }
+
+    // check that classes exists in Classes data structure
+    for (string &c : classCodes) {
+        if (classes.find(c) == classes.end()) {
+            cout << "unsuccessful" << endl;
+            return;
+        }
     }
 
     Student s;
@@ -629,5 +655,57 @@ void CampusCompass::printStudentZone(int UFID) {
 
     cout << "Student Zone Cost for " << s.name << ": " << MSTCost << endl;
 
+}
+
+void CampusCompass::verifySchedule(int UFID) {
+    // check that student exists
+    auto it = students.find(UFID);
+    if (it == students.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    const Student &s = it->second;
+
+    // create a copy of the enrolled classes
+    // and sort by start time
+    vector<string> codes = s.classCodes;
+    sort(codes.begin(), codes.end(),
+        [this](const string &a, const string &b) {
+            const Classes &classA = classes.at(a);
+            const Classes &classB = classes.at(b);
+            return classA.startMinutes < classB.startMinutes;
+    });
+
+    // if student has only 1 class, then unsuccessful
+    if (codes.size() < 2) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    cout << "Schedule Check for " << s.name << ":" << endl;
+
+    const int INF = numeric_limits<int>::max();
+
+    // for each consecutive pairs check if they can make it
+    for (int i = 0; i < codes.size() - 1; i++) {
+        const string &codeFrom = codes[i];
+        const string &codeTo = codes[i + 1];
+
+        const Classes &classTo = classes.at(codeTo);
+        const Classes &classFrom = classes.at(codeFrom);
+
+        int timeGap = classTo.startMinutes - classFrom.startMinutes;
+        int travelTime = shortestTravelTime(classTo.locationID, classFrom.locationID);
+
+        cout << "codeFrom -" << " codeTo ";
+
+        // check if a path exists and travel time <= timeGap
+        if (travelTime != INF && travelTime <= timeGap) {
+            cout << "Can make it!" << endl;
+        } else {
+            cout << "Cannot make it!" << endl;
+        }
+    }
 }
 

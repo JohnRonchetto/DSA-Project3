@@ -58,6 +58,8 @@ private:
 
     // csv reader
     std::vector<std::vector<std::string>> readCSV(const std::string &filename);
+    // translate HH:WW to minutes
+    int timeToMinutes(const std::string &hhmm);
     // Add undirected edge to graph
     void addEdge(int u, int v, int time);
     // get specific edge
@@ -78,8 +80,11 @@ private:
     // and vector version of zoneVertices (for DSU constructor)
     int computeMSTCost(const std::vector<ZoneEdge> &edges, const std::vector<int> &vertices);
 
-    // translate HH:WW to minutes (need for verifySchedule function EC)
-    int timeToMinutes(const std::string &hhmm);
+    // for verifySchedule function
+    // returns the shortest travel time between two location ID's by running dijkstra
+    int shortestTravelTime(int from, int to);
+
+
 
 public:
     CampusCompass() = default;
@@ -99,4 +104,6 @@ public:
     void isConnected(int u, int v);
     void printShortestEdges(int UFID);
     void printStudentZone(int UFID);
+    // extra credit
+    void verifySchedule(int UFID);
 };
