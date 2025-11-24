@@ -18,9 +18,10 @@ std::string parseCommand(const std::string &command,
     classCodes.clear();
     locationIDs.clear();
 
+    // need delimiter as it didn't know which ) was closing the actual string
+    const regex cInsert(                                                   // (.+) catches rest of the line
+    R"del(^\s*insert\s+"([A-Za-z][A-Za-z ]*)"\s+(\d{8})\s+(\d+)\s+([1-6])\s+(.+)\s*$)del");
 
-    const std::regex cInsert(                                               // (.+) catches rest of the line
-    R"CMD(^\s*insert\s+"([A-Za-z][A-Za-z ]*)"\s+(\d{8})\s+(\d+)\s+([1-6])\s+(.+)\s*$)CMD");
     const regex cRemove(R"(^\s*remove\s+(\d{8})\s*$)");
     const regex cDrop(R"(^\s*dropClass\s+(\d{8})\s+([A-Z]{3}\d{4})\s*$)");
     const regex cReplace(R"(^\s*replaceClass\s+(\d{8})\s+([A-Z]{3}\d{4})\s+([A-Z]{3}\d{4})\s*$)");
@@ -28,10 +29,9 @@ std::string parseCommand(const std::string &command,
     const regex cToggleEdges(R"(^\s*toggleEdgesClosure\s+(\d+)\s+(.+)\s*$)");
     const regex cCheckEdge(R"(^\s*checkEdgeStatus\s+(\d+)\s+(\d+)\s*$)");
     const regex cConnected(R"(^\s*isConnected\s+(\d+)\s+(\d+)\s*$)");
-    const regex cShortest(R"(^\s*printShortestEdges\s+(\d+)\s*$)");
-
-    const regex cZone(R"(^\s*printStudentZone\s+(\d+)\s*$)");
-    const regex cVerify(R"(^\s*verifySchedule\s+(\d+)\s*$)");
+    const regex cShortest(R"(^\s*printShortestEdges\s+(\d{8})\s*$)");
+    const regex cZone(R"(^\s*printStudentZone\s+(\d{8})\s*$)");
+    const regex cVerify(R"(^\s*verifySchedule\s+(\d{8})\s*$)");
 
     std::smatch m;
 
@@ -171,14 +171,27 @@ std::string parseCommand(const std::string &command,
         }
     }
     if (std::regex_match(command, m, cZone)) {
+        try {
+            UFID = stoi(m[1].str());
 
-        return "printStudentZone";
+            return "printStudentZone";
+
+        } catch (...) {
+            return "unsuccessful";
+        }
+
     }
     if (std::regex_match(command, m, cVerify)) {
+        try {
+            UFID = stoi(m[1].str());
 
-        return "verifySchedule";
+            return "verifySchedule";
+
+        } catch (...) {
+            return "unsuccessful";
+        }
+
     }
-
 
     return "unsuccessful";
 }
@@ -230,7 +243,7 @@ bool verifyCommand(const std::string &command, CampusCompass &CC) {
         return true;
     }
     if (comm == "printStudentZone") {
-
+        CC.printStudentZone(UFID);
         return true;
     }
     if (comm == "verifySchedule") {
