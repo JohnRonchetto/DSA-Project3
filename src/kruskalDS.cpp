@@ -9,7 +9,7 @@ DSU::DSU(const std::vector<int> &elements) {
 int DSU::find(int x) {
     // check if x is known, if not create a set for it
     if (parent.find(x) == parent.end()) {
-        parent[x] = x;
+        parent[x] = -1;
         return x;
     }
 
