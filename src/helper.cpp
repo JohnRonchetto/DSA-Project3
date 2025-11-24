@@ -247,7 +247,7 @@ bool verifyCommand(const std::string &command, CampusCompass &CC) {
         return true;
     }
     if (comm == "verifySchedule") {
-
+        CC.verifySchedule(UFID);
         return true;
     }
 
