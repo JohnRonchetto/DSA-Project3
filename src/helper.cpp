@@ -1,6 +1,8 @@
 #include "helper.h"
 #include <regex>
 
+using namespace std;
+
 std::string parseCommand(const std::string &command,
                         std::string &name,
                         int &UFID,
@@ -20,7 +22,7 @@ std::string parseCommand(const std::string &command,
     const std::regex cInsert(                                               // (.+) catches rest of the line
     R"CMD(^\s*insert\s+"([A-Za-z][A-Za-z ]*)"\s+(\d{8})\s+(\d+)\s+([1-6])\s+(.+)\s*$)CMD");
     const regex cRemove(R"(^\s*remove\s+(\d{8})\s*$)");
-    const std::regex cDrop(R"(^\s*dropClass\s+(\d{8})\s+([A-Z]{3}\d{4})\s*$)");
+    const regex cDrop(R"(^\s*dropClass\s+(\d{8})\s+([A-Z]{3}\d{4})\s*$)");
     const regex cReplace(R"(^\s*replaceClass\s+(\d{8})\s+([A-Z]{3}\d{4})\s+([A-Z]{3}\d{4})\s*$)");
     const regex cRemoveClass(R"(^\s*removeClass\s+([A-Z]{3}\d{4})\s*$)");
     const regex cToggleEdges(R"(^\s*toggleEdgesClosure\s+(\d+)\s+(.+)\s*$)");
@@ -228,7 +230,7 @@ bool verifyCommand(const std::string &command, CampusCompass &CC) {
         return true;
     }
     if (comm == "printStudentZone") {
-        
+
         return true;
     }
     if (comm == "verifySchedule") {
