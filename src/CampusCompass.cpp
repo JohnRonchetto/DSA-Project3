@@ -1,14 +1,11 @@
 #include "CampusCompass.h"
 #include "kruskalDS.h"
 
-
-#include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <algorithm>
 #include <queue>
-#include <unordered_set>
 #include <limits>
 
 using namespace std;
@@ -141,10 +138,9 @@ std::vector<ZoneEdge> CampusCompass::buildZoneSubgraph(const std::unordered_set<
             }
 
         }
-
-        return subGraph;
-
     }
+
+    return subGraph;
 }
 
 int CampusCompass::computeMSTCost(const std::vector<ZoneEdge> &edges, const std::vector<int> &vertices) {
@@ -353,6 +349,7 @@ void CampusCompass::insert(string name, int UFID, int residenceID, vector<string
     s.classCodes = classCodes;
 
     students[UFID] = s;
+
     cout << "successful" << endl;
 }
 
@@ -688,7 +685,7 @@ void CampusCompass::verifySchedule(int UFID) {
     const int INF = numeric_limits<int>::max();
 
     // for each consecutive pairs check if they can make it
-    for (int i = 0; i < codes.size() - 1; i++) {
+    for (size_t i = 0; i < codes.size() - 1; i++) {
         const string &codeFrom = codes[i];
         const string &codeTo = codes[i + 1];
 

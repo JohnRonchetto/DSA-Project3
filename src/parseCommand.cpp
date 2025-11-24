@@ -1,4 +1,5 @@
-#include "helper.h"
+#include "parseCommand.h"
+
 #include <regex>
 
 using namespace std;
@@ -56,7 +57,7 @@ std::string parseCommand(const std::string &command,
             }
 
             // check that there are N class codes
-            if (classCodes.size() != N) {
+            if (classCodes.size() != static_cast<std::size_t>(N)) {
                 return "unsuccessful";
             }
 
@@ -120,7 +121,7 @@ std::string parseCommand(const std::string &command,
             }
 
             // make sure that N corresponds to the number of ids
-            if (locationIDs.size() != 2*N) {
+            if (locationIDs.size() != static_cast<std::size_t>(2*N)) {
                 return "unsuccessful";
             }
 
@@ -238,7 +239,7 @@ bool verifyCommand(const std::string &command, CampusCompass &CC) {
         CC.isConnected(locationIDs[0], locationIDs[1]);
         return true;
     }
-    if (comm == "printShortEdges") {
+    if (comm == "printShortestEdges") {
         CC.printShortestEdges(UFID);
         return true;
     }

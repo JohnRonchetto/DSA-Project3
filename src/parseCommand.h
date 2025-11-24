@@ -1,9 +1,11 @@
 #ifndef PROJECT3_HELPER_H
 #define PROJECT3_HELPER_H
 
+#include "CampusCompass.h"
+
 #include <string>
 #include <vector>
-#include "CampusCompass.h"
+
 
 // Takes in command along with dummy name, ufid, residenceID, N, classCodes, and locationIDs
 // Verifies that input is correct and assigns name, ufid, residenceID, N, classCodes, and locationIDs
@@ -16,7 +18,7 @@ std::string parseCommand(const std::string &command,
     int &N,
     std::vector<std::string> &classCodes);
 
-// actually executes command
+// actually cals function to executes command
 bool verifyCommand(const std::string &command, CampusCompass &CC);
 
 
