@@ -82,7 +82,7 @@ private:
     int timeToMinutes(const std::string &hhmm);
 
 public:
-    CampusCompass();
+    CampusCompass() = default;
     CampusCompass(const std::string &edges_filename, const std::string &classes_filename);
 
     // populates graph and classes Table

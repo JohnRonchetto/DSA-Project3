@@ -32,7 +32,7 @@ void CampusCompass::shortestPaths(int sourceID, std::unordered_map<int, int> &di
     dist.clear();
     parent.clear();
 
-    // location id -> shortest distance from source
+    // residence id -> shortest distance from source
     // std::unordered_map<int, int> &dist
 
     // child Node -> parent Node
@@ -242,9 +242,6 @@ bool CampusCompass::toggleEdge(int u, int v) {
 }
 
 
-CampusCompass::CampusCompass() {
-}
-
 CampusCompass::CampusCompass(const string &edges_filename, const string &classes_filename) {
     if (!ParseCSV(edges_filename, classes_filename)) {
         cerr << "Error: could not parse CSV files" << endl;
@@ -262,20 +259,23 @@ bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes
     for (size_t i = 1; i < edges.size(); i++) {
         auto &row = edges[i];
 
-        int u = stoi(row[0]); // Location ID 1
-        int v = stoi(row[1]); // Location ID 2
-        string locName1 = row[2]; // Location name 1
-        string locName2 = row[3]; // Location name 2
-        int t = stoi(row[4]); // Time
+        // ensure that the line format is correct
+        if (row.size() == 5) {
+            int u = stoi(row[0]); // Location ID 1
+            int v = stoi(row[1]); // Location ID 2
+            string locName1 = row[2]; // Location name 1
+            string locName2 = row[3]; // Location name 2
+            int t = stoi(row[4]); // Time
 
-        // making sure names exist before inserting into map
-        if (!locName1.empty())
-            // (emplace only inserts if key doesn't exist)
-            locationNames.emplace(u, locName1);
-        if (!locName2.empty())
-            locationNames.emplace(v, locName2);
+            // making sure names exist before inserting into map
+            if (!locName1.empty())
+                // (emplace only inserts if key doesn't exist)
+                    locationNames.emplace(u, locName1);
+            if (!locName2.empty())
+                locationNames.emplace(v, locName2);
 
-        addEdge(u, v, t);
+            addEdge(u, v, t);
+        }
     }
 
     // Load classes.csv
@@ -288,12 +288,17 @@ bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes
     for (size_t i = 1; i < classInfo.size(); i++) {
         auto &row = classInfo[i];
 
-        string code = row[0];
-        int locationID = stoi(row[1]);
-        int start = timeToMinutes(row[2]);
-        int end = timeToMinutes(row[3]);
+        // ensure that the line format is correct
+        if (row.size() == 4) {
+            string code = row[0];
+            int locationID = stoi(row[1]);
+            int start = timeToMinutes(row[2]);
+            int end = timeToMinutes(row[3]);
 
-        classes[code] = {locationID, start, end};
+            classes[code] = {locationID, start, end};
+        }
+
+
     }
 
     return true;
@@ -306,6 +311,12 @@ void CampusCompass::insert(string name, int UFID, int residenceID, vector<string
 
     // check if student id is unique
     if (students.find(UFID) != students.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    // check if residence ID exists in graph as a location ID
+    if (Graph.find(residenceID) == Graph.end()) {
         cout << "unsuccessful" << endl;
         return;
     }
@@ -568,5 +579,55 @@ void CampusCompass::printShortestEdges(int UFID) {
 
         cout << code << " | Total Time: " << time << endl;
     }
+}
+
+void CampusCompass::printStudentZone(int UFID) {
+    // check that student exists
+    auto it = students.find(UFID);
+    if (it == students.end()) {
+        cout << "unsuccessful" << endl;
+        return;
+    }
+
+    const Student &s = it->second;
+
+    // calculate the shortest distance/path to all classes
+    unordered_map<int, int> dist;
+    unordered_map<int, int> parent;
+    shortestPaths(s.residenceID, dist, parent);
+
+    // get all vertices (location IDs) on the shortest paths and residence ID
+    unordered_set<int> zoneVertices;
+    zoneVertices.insert(s.residenceID);
+
+    // reconstruct the shortest path for each class location
+    for (auto code : s.classCodes) {
+
+        auto cIt = classes.find(code);
+        // check that class exists
+        if (cIt == classes.end()) {
+            continue;
+        }
+
+        int locID = cIt->second.locationID;
+
+        // iterate backwards through parent untile we reach residence = -1
+        // (parent[source] = -1)
+        int cur = locID;
+        while (cur != -1) {
+            zoneVertices.insert(cur);
+            cur = parent[cur];
+        }
+    }
+
+    // create subgraph for MST
+    auto subG = buildZoneSubgraph(zoneVertices);
+
+    // need to convert zoneVertices set to vector for DSU constructor
+    vector<int> vertList(zoneVertices.begin(), zoneVertices.end());
+    int MSTCost = computeMSTCost(subG, vertList);
+
+    cout << "Student Zone Cost for " << s.name << ": " << MSTCost << endl;
+
 }
 
