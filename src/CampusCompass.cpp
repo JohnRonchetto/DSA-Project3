@@ -1,4 +1,6 @@
 #include "CampusCompass.h"
+#include "kruskalDS.h"
+
 
 #include <string>
 #include <fstream>
@@ -103,6 +105,73 @@ void CampusCompass::shortestPaths(int sourceID, std::unordered_map<int, int> &di
             }
         }
     }
+}
+
+std::vector<ZoneEdge> CampusCompass::buildZoneSubgraph(const std::unordered_set<int> &zoneVertices) {
+    vector<ZoneEdge> subGraph;
+
+    for (int u : zoneVertices) {
+
+        auto it = Graph.find(u);
+
+        // check that location ID is valid, if not skip
+        if (it == Graph.end()) {
+            continue;
+        }
+
+        vector<GraphEdge> neighbors = it->second;
+
+        for (auto &edge : neighbors) {
+            int v = edge.to;
+
+            // check that edge is open, otherwise skip
+            if (!edge.open) {
+                continue;
+            }
+
+            // only keep edges where end point is also in the zone!!!!
+            if (zoneVertices.count(v) == 0) {
+                continue;
+            }
+
+            // only store one copy of the undirected edge!!!
+            // (when u < v)
+            if (u < v) {
+                subGraph.push_back(ZoneEdge{u, v, edge.time});
+            }
+
+        }
+
+        return subGraph;
+
+    }
+}
+
+int CampusCompass::computeMSTCost(const std::vector<ZoneEdge> &edges, const std::vector<int> &vertices) {
+
+    // sort Zone edges by time
+    vector<ZoneEdge> sortedZoneEdges = edges;
+    sort(sortedZoneEdges.begin(), sortedZoneEdges.end(),
+        [](const ZoneEdge &a, const ZoneEdge &b) {
+            return a.w < b.w;
+    });
+
+    // initialize all vertices in the zone as single sets
+    // (recall parent[x] = -1)
+    DSU dsu(vertices);
+
+    int mstCost = 0;
+
+    // Kruskal algorithm
+    for (const auto &e : sortedZoneEdges) {
+        // merge edges if they are not in the same set (merge returns true)
+        // if not do not merge -> cycle
+        if (dsu.merge(e.u, e.v)) {
+            mstCost += e.w;
+        }
+    }
+
+    return mstCost;
 }
 
 vector<vector<string>> CampusCompass::readCSV(const string &filename) {
