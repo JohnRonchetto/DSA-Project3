@@ -111,4 +111,5 @@ public:
     int getStudentCount() const;
     bool hasStudent(int UFID) const;
     const Student* getStudent(int UFID) const;
+    const GraphEdge* getGraphEdge(int u, int v);
 };

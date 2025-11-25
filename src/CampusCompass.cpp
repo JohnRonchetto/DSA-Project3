@@ -724,3 +724,7 @@ const Student * CampusCompass::getStudent(int UFID) const {
     return &it->second;
 }
 
+const GraphEdge * CampusCompass::getGraphEdge(int u, int v) {
+    return getEdge(u, v);
+}
+
