@@ -106,4 +106,9 @@ public:
     void printStudentZone(int UFID);
     // extra credit
     void verifySchedule(int UFID);
+
+    // testing functions
+    int getStudentCount() const;
+    bool hasStudent(int UFID) const;
+    const Student* getStudent(int UFID) const;
 };

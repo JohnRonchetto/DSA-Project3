@@ -699,10 +699,28 @@ void CampusCompass::verifySchedule(int UFID) {
 
         // check if a path exists and travel time <= timeGap
         if (travelTime != INF && travelTime <= timeGap) {
-            cout << "Can make it!" << endl;
+            cout << "\"Can make it!\"" << endl;
         } else {
-            cout << "Cannot make it!" << endl;
+            cout << "\"Cannot make it!\"" << endl;
         }
     }
+}
+
+
+
+int CampusCompass::getStudentCount() const {
+    return students.size();
+}
+
+bool CampusCompass::hasStudent(int UFID) const {
+    return students.find(UFID) != students.end();
+}
+
+const Student * CampusCompass::getStudent(int UFID) const {
+    auto it = students.find(UFID);
+    if (it == students.end()) {
+        return nullptr;;
+    }
+    return &it->second;
 }
 
