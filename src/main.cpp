@@ -10,7 +10,7 @@ int main() {
     CampusCompass CC;
 
     // ingest CSV data
-    CC.ParseCSV("../data/edges.csv", "../data/classes.csv");
+    CC.ParseCSV("data/edges.csv", "data/classes.csv");
 
     int no_of_lines;
     string command;
