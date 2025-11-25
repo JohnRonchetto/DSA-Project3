@@ -39,6 +39,8 @@ add_executable(Tests
         src/CampusCompass.h
         src/parseCommand.h
         src/parseCommand.cpp
+        src/kruskalDS.h
+        src/kruskalDS.cpp
         # add your own header files below - should be automatically added in CLion
         # example (can also separate with newlines):
         # src/AVL.h src/AVL.cpp
@@ -51,3 +53,15 @@ target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain) #link catch to test.
 #include(CTest)
 #include(Catch)
 #catch_discover_tests(Tests) # must be named the same as your test executable
+
+# Copy `data/` into the build directory so runtime can open files with `data/...`
+add_custom_target(copy_data ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/data
+        ${CMAKE_BINARY_DIR}/data
+        COMMENT "Copying data directory to build directory"
+)
+
+# Ensure both executables are built after the data is copied
+add_dependencies(Main copy_data)
+add_dependencies(Tests copy_data)
