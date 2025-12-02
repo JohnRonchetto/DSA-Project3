@@ -81,10 +81,67 @@ TEST_CASE("Incorrect command", "[invalid commands]") {
     }
 
     SECTION("5) CheckEdgeStatus - invalid location IDs") {
+        // should not accept non integers as edges
         bool invalidCommand = verifyCommand("CheckEdgeStatus 22.3 45.7", cc);
 
         REQUIRE_FALSE(invalidCommand);
     }
+
+}
+
+// 2. Test at least three edge cases for various functions
+TEST_CASE("Edge cases for various functions", "[edge cases]") {
+    CampusCompass cc("data/edges.csv", "data/classes.csv");
+
+    // insert some valid students for comparison in edge commands
+    bool val1 = verifyCommand(R"(insert "Brandon" 45679999 20 2 COP3530 MAC2311)", cc);
+    REQUIRE(val1);
+    REQUIRE(cc.getStudentCount() == 1);
+    REQUIRE(cc.hasStudent(45679999));
+
+    bool val2 = verifyCommand(R"(insert "Brian" 35459999 21 3 COP3530 CDA3101 MAC2311)", cc);
+    REQUIRE(val2);
+    REQUIRE(cc.getStudentCount() == 2);
+    REQUIRE(cc.hasStudent(35459999));
+
+    bool val3 = verifyCommand(R"(insert "Briana" 87879999 22 3 CDA3101 MAC2311 EEL3701)", cc);
+    REQUIRE(val3);
+    REQUIRE(cc.getStudentCount() == 3);
+    REQUIRE(cc.hasStudent(87879999));
+
+    SECTION("1) insert student with ufid not unique") {
+        int studentCount = cc.getStudentCount();
+
+        // this is Brandon's ID --> should not insert John
+        bool edgaCommand = verifyCommand(R"(insert "John" 45679999 19 2 COP3530 MAC2311)", cc);
+        // should still call the function
+        REQUIRE(edgaCommand);
+
+
+        // john should not have been inserted instead of Brandon
+        const Student* notJohn = cc.getStudent(45679999);
+        REQUIRE("Brandon" == notJohn->name);
+        REQUIRE(cc.getStudentCount() == studentCount);
+    }
+
+    SECTION("2) drop a class for student and if 0 classes than drop") {
+
+
+    }
+
+    SECTION("3) remove class code and if student has 0 classe then drop") {
+
+    }
+}
+
+// 3. Test your dropClass, removeClass, remove, and replaceClass commands
+TEST_CASE("General command tests", "[general commands]") {
+
+}
+
+// 4. Test your printShortestEdges command in a case where a student can reach a class,
+// then one or more edges turn off, and then they cannot reach that class.
+TEST_CASE("PrintShortEdges test with edge closure", "[PrintShortEdges]") {
 
 }
 
