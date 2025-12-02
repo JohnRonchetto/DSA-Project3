@@ -52,8 +52,6 @@ private:
     // location ID -> location name
     std::unordered_map<int, std::string> locationNames;
 
-
-
     // HELPERS
 
     // csv reader
@@ -112,4 +110,9 @@ public:
     bool hasStudent(int UFID) const;
     const Student* getStudent(int UFID) const;
     const GraphEdge* getGraphEdge(int u, int v);
+    // same logic just different return types for testing
+    std::string dropClassT(int UFID, std::string classCode);
+    std::string removeClassT(std::string classCode);
+    std::string removeT(int UFID);
+    int replaceClassT(int UFID, std::string classCode1, std::string classCode2);
 };
