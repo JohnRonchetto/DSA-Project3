@@ -12,11 +12,11 @@ int main() {
     // ingest CSV data
     CC.ParseCSV("data/edges.csv", "data/classes.csv");
 
-    int no_of_lines;
+    int num_of_lines;
     string command;
-    cin >> no_of_lines;
-    cin.ignore(); // ignore newline that first cin left over
-    for (int i = 0; i < no_of_lines; i++) {
+    getline(cin, command);
+    num_of_lines = stoi(command);
+    for (int i = 0; i < num_of_lines; i++) {
         if (!std::getline(std::cin, command)) {
             break;
         }
