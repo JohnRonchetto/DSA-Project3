@@ -650,7 +650,7 @@ void CampusCompass::printStudentZone(int UFID) {
     vector<int> vertList(zoneVertices.begin(), zoneVertices.end());
     int MSTCost = computeMSTCost(subG, vertList);
 
-    cout << "Student Zone Cost for " << s.name << ": " << MSTCost << endl;
+    cout << "Student Zone Cost For " << s.name << ": " << MSTCost << endl;
 
 }
 
