@@ -728,3 +728,145 @@ const GraphEdge * CampusCompass::getGraphEdge(int u, int v) {
     return getEdge(u, v);
 }
 
+std::string CampusCompass::removeClassT(std::string classCode) {
+    int dropCounter = 0;
+
+    // verify that class code exists
+    auto itC = classes.find(classCode);
+    if (itC == classes.end()) {
+        return "0";
+    }
+
+    // iterate over all the students
+    for (auto it = students.begin(); it != students.end(); ) {
+
+        Student &s = it->second;
+
+        // iterator for searching if students has class
+        auto itSC = find(s.classCodes.begin(), s.classCodes.end(), classCode);
+        // student has the class to be dropped
+        if (itSC != s.classCodes.end()) {
+            s.classCodes.erase(itSC);
+            dropCounter++;
+
+            // check if student has any classes
+            if (s.classCodes.empty()) {
+                // when erase is called -> it points to next !!!
+                it = students.erase(it);
+                // need to skip because we just deleted the iterator
+                // and already points to the next class code
+                continue;
+            }
+        }
+
+        ++it;
+    }
+
+    return to_string(dropCounter);
+
+}
+
+std::string CampusCompass::dropClassT(int UFID, std::string classCode) {
+    // check if student exists
+    auto it = students.find(UFID);
+    if (it == students.end()) {
+        return "unsuccessful";
+
+    }
+
+    // check if class code exists in the class codes table
+    if (classes.find(classCode) == classes.end()) {
+        return "unsuccessful";
+    }
+
+    Student &s = it->second;
+
+    // check if student is enrolled in that class
+    auto codeIt = find(s.classCodes.begin(), s.classCodes.end(), classCode);
+    if (codeIt == s.classCodes.end()) {
+        return "unsuccessful";
+    }
+
+    s.classCodes.erase(codeIt);
+
+    // remove student if 0 classes (considered success)
+    if (s.classCodes.empty()) {
+        students.erase(it);
+    }
+
+    return "successful";
+
+}
+
+std::string CampusCompass::removeT(int UFID) {
+    auto it = students.find(UFID);
+    // check if student exist
+    if(it == students.end()) {
+        return "unsuccessful";
+    }
+
+    students.erase(it);
+    return "successful";
+}
+
+std::string CampusCompass::replaceClassT(int UFID, std::string classCode1, std::string classCode2) {
+    // check if student exists
+    auto it = students.find(UFID);
+    if (it == students.end()) {
+        return "unsuccessful";
+    }
+
+    // check if class code 2 exists in class codes table
+    if (classes.find(classCode2) == classes.end()) {
+        return "unsuccessful";
+    }
+
+    Student &s = it->second;
+
+    // check if student has class code 1
+    auto codeIt1 = find(s.classCodes.begin(), s.classCodes.end(), classCode1);
+    if (codeIt1 == s.classCodes.end()) {
+        return "unsuccessful";
+    }
+
+    // check that student doesn't already have class code 2
+    auto codeIt2 = find(s.classCodes.begin(), s.classCodes.end(), classCode2);
+    if (codeIt2 != s.classCodes.end()) {
+        return "unsuccessful";
+    }
+
+    // replace class code 1 with code 2 (In-place)
+    // dereferencing pointer to code 1 and overwriting it
+    *codeIt1 = classCode2;
+
+    return "successful";
+}
+
+std::string CampusCompass::insertT(std::string name, int UFID, int residenceID, std::vector<std::string> classCodes) {
+    // check if student id is unique
+    if (students.find(UFID) != students.end()) {
+        return "unsuccessful";
+    }
+
+    // check if residence ID exists in graph as a location ID
+    if (Graph.find(residenceID) == Graph.end()) {
+        return "unsuccessful";
+    }
+
+    // check that classes exists in Classes data structure
+    for (string &c : classCodes) {
+        if (classes.find(c) == classes.end()) {
+            return "unsuccessful";
+        }
+    }
+
+    Student s;
+    s.name = name;
+    s.residenceID = residenceID;
+    s.classCodes = classCodes;
+
+    students[UFID] = s;
+
+    return"successful";
+}
+

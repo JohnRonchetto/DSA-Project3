@@ -91,8 +91,8 @@ public:
     // populates graph and classes Table
     bool ParseCSV(const std::string &edges_filepath, const std::string &classes_filepath);
 
-    // Project functions
-    void insert(std::string name, int UFID, int residenceID,std:: vector<std::string> classCodes);
+    // PROJECT FUNCTIONS
+    void insert(std::string name, int UFID, int residenceID, std:: vector<std::string> classCodes);
     void remove(int UFID);
     void dropClass(int UFID, std::string classCode);
     void replaceClass(int UFID, std::string classCode1, std::string classCode2);
@@ -114,5 +114,6 @@ public:
     std::string dropClassT(int UFID, std::string classCode);
     std::string removeClassT(std::string classCode);
     std::string removeT(int UFID);
-    int replaceClassT(int UFID, std::string classCode1, std::string classCode2);
+    std::string replaceClassT(int UFID, std::string classCode1, std::string classCode2);
+    std::string insertT(std::string name, int UFID, int residenceID, std:: vector<std::string> classCodes);
 };
