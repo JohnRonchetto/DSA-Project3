@@ -53,7 +53,6 @@ private:
     std::unordered_map<int, std::string> locationNames;
 
     // HELPERS
-
     // csv reader
     std::vector<std::vector<std::string>> readCSV(const std::string &filename);
     // translate HH:WW to minutes
@@ -62,8 +61,7 @@ private:
     void addEdge(int u, int v, int time);
     // get specific edge
     GraphEdge* getEdge(int u, int v);
-    // closes/opens edge. returns false if edge doesn't exist
-    bool toggleEdge(int u, int v);
+
 
     // helper for printShortestEdges functions -> Dijkstra
     // also traces all parents for printStudentZone function
@@ -90,6 +88,8 @@ public:
 
     // populates graph and classes Table
     bool ParseCSV(const std::string &edges_filepath, const std::string &classes_filepath);
+    // closes/opens edge. returns false if edge doesn't exist
+    bool toggleEdge(int u, int v); // public for testing
 
     // PROJECT FUNCTIONS
     void insert(std::string name, int UFID, int residenceID, std:: vector<std::string> classCodes);
@@ -116,4 +116,5 @@ public:
     std::string removeT(int UFID);
     std::string replaceClassT(int UFID, std::string classCode1, std::string classCode2);
     std::string insertT(std::string name, int UFID, int residenceID, std:: vector<std::string> classCodes);
+    std::string printShortestEdgesString(int UFID);
 };

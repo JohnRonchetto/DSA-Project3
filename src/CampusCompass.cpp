@@ -870,3 +870,51 @@ std::string CampusCompass::insertT(std::string name, int UFID, int residenceID, 
     return"successful";
 }
 
+std::string CampusCompass::printShortestEdgesString(int UFID) {
+
+    // double check that ID exists.
+    // (assignment says id is valid)
+    auto it = students.find(UFID);
+    if (it == students.end()) {
+        return "unsuccessful";
+    }
+
+    // dummy for dijkstra function
+    unordered_map<int, int> dist;
+    unordered_map<int, int> parent;
+
+    const Student &s = it->second;
+
+    // copy and sort class codes in lexicographical order
+    vector<string> codes = s.classCodes;
+    sort(codes.begin(), codes.end());
+
+    // run dijkstra's algorithm
+    shortestPaths(s.residenceID, dist, parent);
+
+    std::string result;
+
+    result += "Name: " + s.name + "\n";
+
+    // print shortest time for each class
+    for (string &code : codes) {
+        int time = -1;
+        auto itC = classes.find(code);
+
+        // ensuring code exists (it should)
+        if (itC != classes.end()) {
+            int locID = itC->second.locationID;
+
+            auto itD = dist.find(locID);
+            // if not, no path -> time = -1
+            if (itD != dist.end()) {
+                time = itD->second;
+            }
+        }
+
+        result += code + " | Total Time: " + std::to_string(time) + "\n";
+    }
+
+    return result;
+}
+
