@@ -8,10 +8,8 @@
 //
 // using namespace std;
 //
-// // You must write 5 unique, meaningful tests for credit on the testing section
-// // of this project!
-//
-//
+// // John Ronchetto
+// // UFID: 52490540
 //
 // // UNIT TESTS REQUIRED
 //
@@ -204,7 +202,7 @@
 //         const auto& codes = brian->classCodes;
 //         REQUIRE(std::find(codes.begin(), codes.end(), "CDA3101") == codes.end());
 //
-//         // Brandon never had CDA3101, so should safely still be in student data structure
+//         // Brandon never had CDA3101, so should still be in student data structure
 //         REQUIRE(cc.hasStudent(11111111));
 //
 //         // should only have a total of 2 students
@@ -276,8 +274,9 @@
 //
 //     REQUIRE(before == expectedBefore);
 //
-//     // Toggle edge 7–49
-//     REQUIRE(cc.toggleEdge(49, 56));
+//     std::vector<int> close{49, 56};
+//     // Toggle edge 49-56
+//     cc.toggleEdgesClosure(1, close);
 //
 //     std::string after = cc.printShortestEdgesString(11111111);
 //
@@ -288,8 +287,8 @@
 //
 //     REQUIRE(after == expectedAfter);
 // }
-
-
-
-
-
+//
+//
+//
+//
+//
