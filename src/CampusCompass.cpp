@@ -514,6 +514,7 @@ void CampusCompass::isConnected(int u, int v) {
     }
 
     // check if they are the same
+    // from slack they say that they will always be distinct
     if (u == v) {
         cout << "unsuccessful" << endl;
         return;
