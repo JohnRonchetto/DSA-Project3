@@ -321,7 +321,7 @@ bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes
 
 
 
-void CampusCompass::insert(string name, int UFID, int residenceID, vector<string> classCodes) {
+void CampusCompass::insert(string name, string UFID, int residenceID, vector<string> classCodes) {
 
     // check if student id is unique
     if (students.find(UFID) != students.end()) {
@@ -353,7 +353,7 @@ void CampusCompass::insert(string name, int UFID, int residenceID, vector<string
     cout << "successful" << endl;
 }
 
-void CampusCompass::remove(int UFID) {
+void CampusCompass::remove(string UFID) {
 
     auto it = students.find(UFID);
     // check if student exist
@@ -367,7 +367,7 @@ void CampusCompass::remove(int UFID) {
 
 }
 
-void CampusCompass::dropClass(int UFID, string classCode) {
+void CampusCompass::dropClass(string UFID, string classCode) {
 
     // check if student exists
     auto it = students.find(UFID);
@@ -402,7 +402,7 @@ void CampusCompass::dropClass(int UFID, string classCode) {
 
 }
 
-void CampusCompass::replaceClass(int UFID, string classCode1, string classCode2) {
+void CampusCompass::replaceClass(string UFID, string classCode1, string classCode2) {
 
     // check if student exists
     auto it = students.find(UFID);
@@ -560,7 +560,7 @@ void CampusCompass::isConnected(int u, int v) {
 
 }
 
-void CampusCompass::printShortestEdges(int UFID) {
+void CampusCompass::printShortestEdges(string UFID) {
 
     // double check that ID exists.
     // (assignment says id is valid)
@@ -605,7 +605,7 @@ void CampusCompass::printShortestEdges(int UFID) {
     }
 }
 
-void CampusCompass::printStudentZone(int UFID) {
+void CampusCompass::printStudentZone(string UFID) {
     // check that student exists
     auto it = students.find(UFID);
     if (it == students.end()) {
@@ -655,7 +655,7 @@ void CampusCompass::printStudentZone(int UFID) {
 
 }
 
-void CampusCompass::verifySchedule(int UFID) {
+void CampusCompass::verifySchedule(string UFID) {
     // check that student exists
     auto it = students.find(UFID);
     if (it == students.end()) {
@@ -696,7 +696,7 @@ void CampusCompass::verifySchedule(int UFID) {
         int timeGap = classTo.startMinutes - classFrom.startMinutes;
         int travelTime = shortestTravelTime(classTo.locationID, classFrom.locationID);
 
-        cout << "codeFrom -" << " codeTo ";
+        cout << codeFrom << " - " << codeTo << " ";
 
         // check if a path exists and travel time <= timeGap
         if (travelTime != INF && travelTime <= timeGap) {
@@ -713,11 +713,11 @@ int CampusCompass::getStudentCount() const {
     return students.size();
 }
 
-bool CampusCompass::hasStudent(int UFID) const {
+bool CampusCompass::hasStudent(string UFID) const {
     return students.find(UFID) != students.end();
 }
 
-const Student * CampusCompass::getStudent(int UFID) const {
+const Student * CampusCompass::getStudent(string UFID) const {
     auto it = students.find(UFID);
     if (it == students.end()) {
         return nullptr;;
@@ -767,7 +767,7 @@ std::string CampusCompass::removeClassT(std::string classCode) {
 
 }
 
-std::string CampusCompass::dropClassT(int UFID, std::string classCode) {
+std::string CampusCompass::dropClassT(string UFID, std::string classCode) {
     // check if student exists
     auto it = students.find(UFID);
     if (it == students.end()) {
@@ -799,7 +799,7 @@ std::string CampusCompass::dropClassT(int UFID, std::string classCode) {
 
 }
 
-std::string CampusCompass::removeT(int UFID) {
+std::string CampusCompass::removeT(string UFID) {
     auto it = students.find(UFID);
     // check if student exist
     if(it == students.end()) {
@@ -810,7 +810,7 @@ std::string CampusCompass::removeT(int UFID) {
     return "successful";
 }
 
-std::string CampusCompass::replaceClassT(int UFID, std::string classCode1, std::string classCode2) {
+std::string CampusCompass::replaceClassT(string UFID, std::string classCode1, std::string classCode2) {
     // check if student exists
     auto it = students.find(UFID);
     if (it == students.end()) {
@@ -843,7 +843,7 @@ std::string CampusCompass::replaceClassT(int UFID, std::string classCode1, std::
     return "successful";
 }
 
-std::string CampusCompass::insertT(std::string name, int UFID, int residenceID, std::vector<std::string> classCodes) {
+std::string CampusCompass::insertT(std::string name, string UFID, int residenceID, std::vector<std::string> classCodes) {
     // check if student id is unique
     if (students.find(UFID) != students.end()) {
         return "unsuccessful";
@@ -871,7 +871,7 @@ std::string CampusCompass::insertT(std::string name, int UFID, int residenceID, 
     return"successful";
 }
 
-std::string CampusCompass::printShortestEdgesString(int UFID) {
+std::string CampusCompass::printShortestEdgesString(string UFID) {
 
     // double check that ID exists.
     // (assignment says id is valid)

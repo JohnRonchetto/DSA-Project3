@@ -13,7 +13,7 @@
 // Returns command type
 std::string parseCommand(const std::string &command,
     std::string &name,
-    int &studentID,
+    std::string &studentID,
     int &residenceID,
     int &N,
     std::vector<std::string> &classCodes);

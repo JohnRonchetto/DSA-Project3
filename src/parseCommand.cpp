@@ -6,14 +6,14 @@ using namespace std;
 
 std::string parseCommand(const std::string &command,
                         std::string &name,
-                        int &UFID,
+                        std::string &UFID,
                         int &residenceID,
                         int &N,
                         std::vector<std::string> &classCodes,
                         std::vector<int> &locationIDs) {
 
     name.clear();
-    UFID = -1;
+    UFID = "";
     residenceID = -1;
     N = 0;
     classCodes.clear();
@@ -39,7 +39,7 @@ std::string parseCommand(const std::string &command,
     if (std::regex_match(command, m, cInsert)) {
         try {
             name = m[1].str();
-            UFID = std::stoi(m[2].str());
+            UFID = m[2].str();
             residenceID = std::stoi(m[3].str());
             N = std::stoi(m[4].str());
 
@@ -70,7 +70,7 @@ std::string parseCommand(const std::string &command,
     }
     if (std::regex_match(command, m, cRemove)) {
         try {
-            UFID = std::stoi(m[1].str());
+            UFID = m[1].str();
             return "remove";
         } catch (...) {
             return "unsuccessful";
@@ -78,7 +78,7 @@ std::string parseCommand(const std::string &command,
     }
     if (std::regex_match(command, m, cDrop)) {
         try {
-            UFID = std::stoi(m[1].str());
+            UFID = m[1].str();
             // just have the single class code
             classCodes.push_back(m[2].str());
             return "dropClass";
@@ -89,7 +89,7 @@ std::string parseCommand(const std::string &command,
     }
     if (std::regex_match(command, m, cReplace)) {
         try {
-            UFID = std::stoi(m[1].str());
+            UFID = m[1].str();
             classCodes.push_back(m[2].str());
             classCodes.push_back(m[3].str());
             return "replaceClass";
@@ -163,7 +163,7 @@ std::string parseCommand(const std::string &command,
     }
     if (std::regex_match(command, m, cShortest)) {
         try {
-            UFID = std::stoi(m[1].str());
+            UFID = m[1].str();
 
             return "printShortestEdges";
 
@@ -173,7 +173,7 @@ std::string parseCommand(const std::string &command,
     }
     if (std::regex_match(command, m, cZone)) {
         try {
-            UFID = stoi(m[1].str());
+            UFID = m[1].str();
 
             return "printStudentZone";
 
@@ -184,7 +184,7 @@ std::string parseCommand(const std::string &command,
     }
     if (std::regex_match(command, m, cVerify)) {
         try {
-            UFID = stoi(m[1].str());
+            UFID = m[1].str();
 
             return "verifySchedule";
 
@@ -201,7 +201,8 @@ bool verifyCommand(const std::string &command, CampusCompass &CC) {
 
     // dummy variables
     std::string name;
-    int UFID, residenceID, N;
+    std::string UFID;
+    int residenceID, N;
     vector<std::string> classCodes;
     std::vector<int> locationIDs;
 

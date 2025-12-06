@@ -22,20 +22,20 @@
 //
 //     // insert some valid students for comparison in invalid commands
 //
-//     string actualOutput1 = cc.insertT("Brandon", 11111111, 20, {"COP3530", "MAC2311"});
+//     string actualOutput1 = cc.insertT("Brandon", "11111111", 20, {"COP3530", "MAC2311"});
 //     REQUIRE(cc.getStudentCount() == 1);
-//     REQUIRE(cc.hasStudent(11111111));
+//     REQUIRE(cc.hasStudent("11111111"));
 //     REQUIRE(expectedOutput == actualOutput1);
 //
 //
-//     string actualOutput2 = cc.insertT("Brian", 22222222, 21, {"COP3530", "CDA3101", "MAC2311"});
+//     string actualOutput2 = cc.insertT("Brian", "22222222", 21, {"COP3530", "CDA3101", "MAC2311"});
 //     REQUIRE(cc.getStudentCount() == 2);
-//     REQUIRE(cc.hasStudent(22222222));
+//     REQUIRE(cc.hasStudent("22222222"));
 //     REQUIRE(expectedOutput == actualOutput2);
 //
-//     string actualOutput3 = cc.insertT("Briana", 33333333, 22, {"CDA3101", "MAC2311", "EEL3701"});
+//     string actualOutput3 = cc.insertT("Briana", "33333333", 22, {"CDA3101", "MAC2311", "EEL3701"});
 //     REQUIRE(cc.getStudentCount() == 3);
-//     REQUIRE(cc.hasStudent(33333333));
+//     REQUIRE(cc.hasStudent("33333333"));
 //     REQUIRE(expectedOutput == actualOutput3);
 //
 //
@@ -48,7 +48,7 @@
 //
 //         REQUIRE_FALSE(invalidCommand);
 //         REQUIRE(cc.getStudentCount() == sCountBefore);
-//         REQUIRE_FALSE(cc.hasStudent(12345678));
+//         REQUIRE_FALSE(cc.hasStudent("12345678"));
 //
 //     }
 //
@@ -60,12 +60,12 @@
 //
 //         REQUIRE_FALSE(invalidCommand);
 //         REQUIRE(cc.getStudentCount() == sCountBefore);
-//         REQUIRE_FALSE(cc.hasStudent(1234567));
+//         REQUIRE_FALSE(cc.hasStudent("1234567"));
 //     }
 //
 //     SECTION("3) dropClass - drop invalid class") {
 //
-//         const Student* Brandon = cc.getStudent(11111111);
+//         const Student* Brandon = cc.getStudent("11111111");
 //         vector<string> bClassCodes = {"COP3530", "MAC2311"};
 //
 //         // class doesn't respect the format
@@ -101,31 +101,31 @@
 //
 //     // insert some valid students for comparison in invalid commands
 //
-//     string actualOutput1 = cc.insertT("Brandon", 11111111, 20, {"COP3530", "MAC2311"});
+//     string actualOutput1 = cc.insertT("Brandon", "11111111", 20, {"COP3530", "MAC2311"});
 //     REQUIRE(cc.getStudentCount() == 1);
-//     REQUIRE(cc.hasStudent(11111111));
+//     REQUIRE(cc.hasStudent("11111111"));
 //     REQUIRE(expectedOutputV == actualOutput1);
 //
 //
-//     string actualOutput2 = cc.insertT("Brian", 22222222, 21, {"COP3530", "CDA3101", "MAC2311"});
+//     string actualOutput2 = cc.insertT("Brian", "22222222", 21, {"COP3530", "CDA3101", "MAC2311"});
 //     REQUIRE(cc.getStudentCount() == 2);
-//     REQUIRE(cc.hasStudent(22222222));
+//     REQUIRE(cc.hasStudent("22222222"));
 //     REQUIRE(expectedOutputV == actualOutput2);
 //
-//     string actualOutput3 = cc.insertT("Briana", 33333333, 22, {"CDA3101"});
+//     string actualOutput3 = cc.insertT("Briana", "33333333", 22, {"CDA3101"});
 //     REQUIRE(cc.getStudentCount() == 3);
-//     REQUIRE(cc.hasStudent(33333333));
+//     REQUIRE(cc.hasStudent("33333333"));
 //     REQUIRE(expectedOutputV == actualOutput3);
 //
 //     SECTION("1) insert student with ufid not unique") {
 //         int studentCount = cc.getStudentCount();
 //
 //         // this is Brandon's ID --> should not insert John
-//         string actualOutput = cc.insertT("John", 11111111, 19, {"COP3530", "MAC2311"});
+//         string actualOutput = cc.insertT("John", "11111111", 19, {"COP3530", "MAC2311"});
 //         string expectedOutput = "unsuccessful";
 //
 //         // john should not have been inserted instead of Brandon
-//         const Student* notJohn = cc.getStudent(11111111);
+//         const Student* notJohn = cc.getStudent("11111111");
 //         REQUIRE("Brandon" == notJohn->name);
 //         REQUIRE(cc.getStudentCount() == studentCount);
 //
@@ -136,7 +136,7 @@
 //
 //         string expectedOut = "unsuccessful";
 //         // brandon is not in this class!
-//         string actualOutput = cc.dropClassT(11111111, "EEL3701");
+//         string actualOutput = cc.dropClassT("11111111", "EEL3701");
 //
 //         REQUIRE(expectedOut == actualOutput);
 //
@@ -152,7 +152,7 @@
 //         REQUIRE(expectedOut == actualOutput);
 //
 //         // Briana should not be in student data structure anymore
-//         REQUIRE_FALSE(cc.hasStudent(333333333));  // Briana's UFID
+//         REQUIRE_FALSE(cc.hasStudent("333333333"));  // Briana's UFID
 //
 //         // Student count should decrease by 1
 //         REQUIRE(cc.getStudentCount() == 2);
@@ -180,7 +180,7 @@
 //         // brandon has still classes
 //         REQUIRE(cc.getStudentCount() == beforeCount);
 //
-//         const Student* s = cc.getStudent(11111111);
+//         const Student* s = cc.getStudent("11111111");
 //         REQUIRE(s != nullptr);
 //
 //         const auto& codes = s->classCodes;
@@ -193,17 +193,17 @@
 //         REQUIRE( verifyCommand(R"(removeClass CDA3101)", cc) );
 //
 //         // Briana had only CDA3101 so should not be in data structure anymore
-//         REQUIRE_FALSE(cc.hasStudent(33333333));
+//         REQUIRE_FALSE(cc.hasStudent("33333333"));
 //
 //         // Brian should still exist, but without CDA3101
-//         REQUIRE(cc.hasStudent(22222222));
-//         const Student* brian = cc.getStudent(22222222);
+//         REQUIRE(cc.hasStudent("22222222"));
+//         const Student* brian = cc.getStudent("22222222");
 //         REQUIRE(brian != nullptr);
 //         const auto& codes = brian->classCodes;
 //         REQUIRE(std::find(codes.begin(), codes.end(), "CDA3101") == codes.end());
 //
 //         // Brandon never had CDA3101, so should still be in student data structure
-//         REQUIRE(cc.hasStudent(11111111));
+//         REQUIRE(cc.hasStudent("11111111"));
 //
 //         // should only have a total of 2 students
 //         REQUIRE(cc.getStudentCount() == 2);
@@ -215,19 +215,19 @@
 //         // remove Brian
 //         REQUIRE( verifyCommand(R"(remove 22222222)", cc) );
 //         REQUIRE(cc.getStudentCount() == beforeCount - 1);
-//         REQUIRE_FALSE(cc.hasStudent(22222222));
+//         REQUIRE_FALSE(cc.hasStudent("22222222"));
 //
 //         // remove Briana
 //         REQUIRE( verifyCommand(R"(remove 33333333)", cc) );
 //         REQUIRE(cc.getStudentCount() == beforeCount - 2);
-//         REQUIRE_FALSE(cc.hasStudent(33333333));
+//         REQUIRE_FALSE(cc.hasStudent("33333333"));
 //
 //     }
 //
 //     SECTION("replaceClass") {
 //
 //         // make sure Brandon doesn't already have eel3701 and has cop3530
-//         const Student* before = cc.getStudent(11111111);
+//         const Student* before = cc.getStudent("11111111");
 //         REQUIRE(before != nullptr);
 //         const auto& codes = before->classCodes;
 //         REQUIRE(std::find(codes.begin(), codes.end(), "EEL3701") == codes.end());
@@ -237,7 +237,7 @@
 //         // replace COP3530 with EEL3701
 //         REQUIRE( verifyCommand(R"(replaceClass 11111111 COP3530 EEL3701)", cc) );
 //
-//         const Student* after = cc.getStudent(11111111);
+//         const Student* after = cc.getStudent("11111111");
 //         REQUIRE(after != nullptr);
 //         const auto& codesAfter = after->classCodes;
 //
@@ -264,7 +264,7 @@
 //
 //     REQUIRE(verifyCommand(R"(insert "John" 11111111 7 2 STA3032 COP4020)", cc));
 //
-//     std::string before = cc.printShortestEdgesString(11111111);
+//     std::string before = cc.printShortestEdgesString("11111111");
 //
 //
 //     std::string expectedBefore =
@@ -278,7 +278,7 @@
 //     // Toggle edge 49-56
 //     cc.toggleEdgesClosure(1, close);
 //
-//     std::string after = cc.printShortestEdgesString(11111111);
+//     std::string after = cc.printShortestEdgesString("11111111");
 //
 //     std::string expectedAfter =
 //         "Name: John\n"

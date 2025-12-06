@@ -43,7 +43,7 @@ private:
     std::unordered_map<int, std::vector<GraphEdge>> Graph;
 
     // student ID -> student info
-    std::unordered_map<int, Student> students;
+    std::unordered_map<std::string, Student> students;
 
     // class Code -> class Info
     std::unordered_map<std::string, Classes> classes;
@@ -92,29 +92,29 @@ public:
     bool ParseCSV(const std::string &edges_filepath, const std::string &classes_filepath);
 
     // PROJECT FUNCTIONS
-    void insert(std::string name, int UFID, int residenceID, std:: vector<std::string> classCodes);
-    void remove(int UFID);
-    void dropClass(int UFID, std::string classCode);
-    void replaceClass(int UFID, std::string classCode1, std::string classCode2);
+    void insert(std::string name, std::string UFID, int residenceID, std:: vector<std::string> classCodes);
+    void remove(std::string UFID);
+    void dropClass(std::string UFID, std::string classCode);
+    void replaceClass(std::string UFID, std::string classCode1, std::string classCode2);
     void removeClass(std::string classCode);
     void toggleEdgesClosure(int N, std::vector<int> &locationIDs);
     void checkEdgeStatus(int locationIDx, int locationIDy);
     void isConnected(int u, int v);
-    void printShortestEdges(int UFID);
-    void printStudentZone(int UFID);
+    void printShortestEdges(std::string UFID);
+    void printStudentZone(std::string UFID);
     // extra credit
-    void verifySchedule(int UFID);
+    void verifySchedule(std::string UFID);
 
     // testing functions
     int getStudentCount() const;
-    bool hasStudent(int UFID) const;
-    const Student* getStudent(int UFID) const;
+    bool hasStudent(std::string UFID) const;
+    const Student* getStudent(std::string UFID) const;
     const GraphEdge* getGraphEdge(int u, int v);
     // same logic just different return types for testing
-    std::string dropClassT(int UFID, std::string classCode);
+    std::string dropClassT(std::string UFID, std::string classCode);
     std::string removeClassT(std::string classCode);
-    std::string removeT(int UFID);
-    std::string replaceClassT(int UFID, std::string classCode1, std::string classCode2);
-    std::string insertT(std::string name, int UFID, int residenceID, std:: vector<std::string> classCodes);
-    std::string printShortestEdgesString(int UFID);
+    std::string removeT(std::string UFID);
+    std::string replaceClassT(std::string UFID, std::string classCode1, std::string classCode2);
+    std::string insertT(std::string name, std::string UFID, int residenceID, std:: vector<std::string> classCodes);
+    std::string printShortestEdgesString(std::string UFID);
 };
