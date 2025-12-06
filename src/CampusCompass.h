@@ -61,6 +61,8 @@ private:
     void addEdge(int u, int v, int time);
     // get specific edge
     GraphEdge* getEdge(int u, int v);
+    // closes/opens edge. returns false if edge doesn't exist
+    bool toggleEdge(int u, int v);
 
 
     // helper for printShortestEdges functions -> Dijkstra
@@ -88,8 +90,6 @@ public:
 
     // populates graph and classes Table
     bool ParseCSV(const std::string &edges_filepath, const std::string &classes_filepath);
-    // closes/opens edge. returns false if edge doesn't exist
-    bool toggleEdge(int u, int v); // public for testing
 
     // PROJECT FUNCTIONS
     void insert(std::string name, int UFID, int residenceID, std:: vector<std::string> classCodes);
