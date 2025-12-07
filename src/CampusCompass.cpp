@@ -640,7 +640,13 @@ void CampusCompass::printStudentZone(string UFID) {
         int cur = locID;
         while (cur != -1) {
             zoneVertices.insert(cur);
-            cur = parent[cur];
+
+            auto pIt = parent.find(cur);
+            if (pIt == parent.end()) {
+                // should not happen, but prevents any infinite loop
+                break;
+            }
+            cur = pIt->second;
         }
     }
 
@@ -693,8 +699,8 @@ void CampusCompass::verifySchedule(string UFID) {
         const Classes &classTo = classes.at(codeTo);
         const Classes &classFrom = classes.at(codeFrom);
 
-        int timeGap = classTo.startMinutes - classFrom.startMinutes;
-        int travelTime = shortestTravelTime(classTo.locationID, classFrom.locationID);
+        int timeGap = classTo.startMinutes - classFrom.endMinutes;
+        int travelTime = shortestTravelTime(classFrom.locationID, classTo.locationID);
 
         cout << codeFrom << " - " << codeTo << " ";
 
