@@ -1,2 +1,7 @@
 build/
 .DS_Store
+
+# IDE and build output
+.idea/
+.vscode/
+cmake-build-*/
